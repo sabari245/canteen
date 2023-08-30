@@ -15,11 +15,12 @@ export default function AuthenticationPage() {
   return (
     <>
       <div className="md:hidden">
-        <Image
+        {/* <Image
           src="/images/auth-background.webp"
+          width={}
           alt="Authentication"
           className="block"
-        />
+        /> */}
       </div>
       <div className="container relative hidden h-[800px] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
         <Link
