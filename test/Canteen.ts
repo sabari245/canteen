@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-describe("Storage Contract", () => {
+describe("Canteen Contract", () => {
 
     async function deployStorage() {
         const [owner, addr1, addr2] = await ethers.getSigners();
