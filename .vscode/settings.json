@@ -11,5 +11,10 @@
     "**/.settings": true,
     "**/.factorypath": true,
     "**/node_modules": true
-  }
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "python.formatting.provider": "none",
+  "python.analysis.typeCheckingMode": "basic"
 }
