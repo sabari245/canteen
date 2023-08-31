@@ -1,7 +1,7 @@
 import { ethers } from "hardhat";
 import { writeFileSync } from "fs"
 
-const OUTPUT_FILE = "./backend/functions/interface.json"
+const OUTPUT_FILE = "./backend/interface.json"
 
 async function main() {
   const currentTimestampInSeconds = Math.round(Date.now() / 1000);
