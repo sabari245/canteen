@@ -1,7 +1,7 @@
 import { ethers } from "hardhat";
 import { writeFileSync } from "fs"
 
-const OUTPUT_FILE = "./backend/interface.json"
+const OUTPUT_FILE = "./backend/src/interface/contract.ts"
 
 async function main() {
   const currentTimestampInSeconds = Math.round(Date.now() / 1000);
@@ -19,7 +19,7 @@ async function main() {
     abi: JSON.parse(storageInstance.interface.formatJson())
   }
 
-  writeFileSync(OUTPUT_FILE, JSON.stringify(data));
+  writeFileSync(OUTPUT_FILE, "export const data = " + JSON.stringify(data));
 
   console.log(
     `Lock with ETH and unlock timestamp ${unlockTime} deployed to ${Storage.target}`
