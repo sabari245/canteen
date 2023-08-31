@@ -1,28 +1,72 @@
-import { Web3, ContractAbi } from "web3";
+import { createPublicClient, createWalletClient, http, PublicClient, WalletClient, WriteContractParameters } from 'viem'
+import { privateKeyToAccount } from 'viem/accounts'
+import { Chain, localhost } from 'viem/chains'
 import { data } from "./contract";
 
-const web3 = new Web3("http://127.0.0.1:8545/");
+type GetWalletClientResult = WalletClient | null
 
-const contract = new web3.eth.Contract(data.abi as ContractAbi, data.address);
+const localnet: Chain = {
+  ...localhost,
+  id: 31337,
+};
 
-const account = web3.eth.accounts.wallet.add(process.env.PRIVATE_KEY!);
+const account = privateKeyToAccount(process.env.PRIVATE_KEY! as `0x${string}`);
 
-export function createOrder(orderId: number, price: number) {
-  contract.methods.createOrder(orderId, price).send({ from: account.address })
-    .on("receipt", (receipt: any) => {
-      console.log("Order created:", receipt);
-    })
-    .on("error", (error: any) => {
-      console.error("Error creating order:", error);
-    });
+const publicClient = createPublicClient({
+  chain: localnet,
+  transport: http()
+})
+
+const walletClient = createWalletClient({ 
+  account,
+  chain: localnet,
+  transport: http()
+})
+
+async function createOrder(
+  publicClient: PublicClient,
+  walletClient: GetWalletClientResult | undefined,
+  orderId: number,
+  price: number
+): Promise<void> {
+  if (!walletClient) {
+    console.log('cannot import account');
+    return;
+  }
+
+  const [address] = await walletClient.getAddresses();
+
+  const { request } = await publicClient.simulateContract({
+    abi: data.abi,
+    address: data.address as `0x${string}`,
+    functionName: 'createOrder',
+    args: [orderId, price],
+    account: address,
+  });
+
+  const hash = await walletClient.writeContract(request);
 }
 
-export function orderPurchased(orderId: number, payer: string) {
-  contract.methods.orderPurchased(orderId, payer).send({ from: account.address })
-    .on("receipt", (receipt: any) => {
-      console.log("Order purchased:", receipt);
-    })
-    .on("error", (error: any) => {
-      console.error("Error purchasing order:", error);
-    });
+async function orderPurchased(
+  publicClient: PublicClient,
+  walletClient: GetWalletClientResult | undefined,
+  orderId: number,
+  payer: string
+): Promise<void> {
+  if (!walletClient) {
+    console.log('cannot import account');
+    return;
+  }
+
+  const [address] = await walletClient.getAddresses();
+
+  const { request } = await publicClient.simulateContract({
+    abi: data.abi,
+    address: data.address as `0x${string}`,
+    functionName: 'orderPurchased',
+    args: [orderId, payer],
+    account: address,
+  });
+
+  const hash = await walletClient.writeContract(request);
 }
