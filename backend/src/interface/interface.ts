@@ -1,9 +1,7 @@
-import { createPublicClient, createWalletClient, http, PublicClient, WalletClient, WriteContractParameters } from 'viem'
+import { createPublicClient, createWalletClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { Chain, localhost } from 'viem/chains'
 import { data } from "./contract";
-
-type GetWalletClientResult = WalletClient | null
 
 const localnet: Chain = {
   ...localhost,
@@ -24,8 +22,6 @@ const walletClient = createWalletClient({
 })
 
 async function createOrder(
-  publicClient: PublicClient,
-  walletClient: GetWalletClientResult | undefined,
   orderId: number,
   price: number
 ): Promise<void> {
@@ -48,8 +44,6 @@ async function createOrder(
 }
 
 async function orderPurchased(
-  publicClient: PublicClient,
-  walletClient: GetWalletClientResult | undefined,
   orderId: number,
   payer: string
 ): Promise<void> {
@@ -70,3 +64,8 @@ async function orderPurchased(
 
   const hash = await walletClient.writeContract(request);
 }
+
+export {
+  createOrder,
+  orderPurchased
+};
